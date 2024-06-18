@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hangle</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      overflow: hidden;
+      background-color: #333;
+    }
+
+    .navbar a {
+      float: left;
+      font-size: 16px;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    .dropdown {
+      float: left;
+      overflow: hidden;
+    }
+
+    .dropdown .dropbtn {
+      font-size: 16px;
+      border: none;
+      outline: none;
+      color: white;
+      padding: 14px 16px;
+      background-color: inherit;
+      font-family: inherit;
+      margin: 0;
+    }
+
+    .navbar a:hover,
+    .dropdown:hover .dropbtn {
+      background-color: red;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      float: none;
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      text-align: left;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #ddd;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    #container {
+      display: flex;
+      height: 100vh;
+    }
+
+    #hangman-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #hang-img {
+      width: 60%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    #game-container {
+      flex: 1;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #game-board {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .letter-row {
+      display: flex;
+    }
+
+    .letter-box {
+      border: 2px solid #000;
+      margin: 2px;
+      padding: 15px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      width: 50px;
+      height: 50px;
+    }
+
+    .keyboard-button {
+      margin: 6px;
+      padding: 10px;
+      font-size: 18px;
+    }
+
+    .filled-box {
+      background-color: lightgray;
+    }
+
+    .rules {
+      width: 80%;
+      font-size: 16px;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .rules ol {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body style="background-color: white" onload="checkLogin()">
+  <div class="navbar">
+    <a href="login.html" id="login-button">התחברות</a>
+    <div class="dropdown" id="class-dropdown">
+      <button class="dropbtn">
+        כיתות
+        <i class="fa fa-caret-down"></i>
+      </button>
+      <div class="dropdown-content">
+        <a href="#" id="grade-4">כיתה ד</a>
+        <a href="#" id="grade-5">כיתה ה</a>
+        <a href="#" id="grade-6">כיתה ו</a>
+      </div>
+    </div>
+    <a href="stats.html" id="stats-button" style="display: none;">סטטיסטיקות</a>
+  </div>
+
+  <div id="container">
+    <div id="hangman-container">
+      <img src="images/hangman-0.svg" alt="" id="hang-img" />
+    </div>
+    <div id="game-container">
+      <div class="rules">
+        <h3>:חוקי המשחק</h3>
+        <ol>
+          <li>לכל שחקן יש כשישה ניסיונות לנחש מילה בת 5 אותיות</li>
+          <li>אם האות סומנה בצהוב משמע שהאות במילה אך לא במקום הנכון</li>
+          <li>אם האות סומנה בירוק משמע שהאות במקום הנכון</li>
+          <li>בשביל להחליף את רמת רשימת המילים לחצו על רמת הכיתה המבוקשת בלשונית למעלה</li>
+          <li>במידה ולא תבחר רשימת מילים או שלא תתחבר ותשחק כאורח, רשימת המילים תכלול מילים מכל הרמות וגם מילים נוספות</li>
+          
+        </ol>
+      </div>
+      <div id="game">
+        <h1>HANGLE</h1>
+        <div id="game-board"></div>
+        <div id="keyboard-cont">
+          <div class="first-row">
+            <button class="keyboard-button">q</button>
+            <button class="keyboard-button">w</button>
+            <button class="keyboard-button">e</button>
+            <button class="keyboard-button">r</button>
+            <button class="keyboard-button">t</button>
+            <button class="keyboard-button">y</button>
+            <button class="keyboard-button">u</button>
+            <button class="keyboard-button">i</button>
+            <button class="keyboard-button">o</button>
+            <button class="keyboard-button">p</button>
+          </div>
+          <div class="second-row">
+            <button class="keyboard-button">a</button>
+            <button class="keyboard-button">s</button>
+            <button class="keyboard-button">d</button>
+            <button class="keyboard-button">f</button>
+            <button class="keyboard-button">g</button>
+            <button class="keyboard-button">h</button>
+            <button class="keyboard-button">j</button>
+            <button class="keyboard-button">k</button>
+            <button class="keyboard-button">l</button>
+          </div>
+          <div class="third-row">
+            <button class="keyboard-button">Del</button>
+            <button class="keyboard-button">z</button>
+            <button class="keyboard-button">x</button>
+            <button class="keyboard-button">c</button>
+            <button class="keyboard-button">v</button>
+            <button class="keyboard-button">b</button>
+            <button class="keyboard-button">n</button>
+            <button class="keyboard-button">m</button>
+            <button class="keyboard-button">Enter</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script
+    src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+    crossorigin="anonymous"
+  ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="script.js" type="module"></script>
+
+  <script>
+    function checkLogin() {
+      const username = localStorage.getItem('username');
+      const statsButton = document.getElementById('stats-button');
+      const classDropdown = document.getElementById('class-dropdown');
+
+      if (!username || username === 'null') {
+        statsButton.style.display = 'none';
+        classDropdown.style.display = 'none';
+      } else {
+        statsButton.style.display = 'null';
+        classDropdown.style.display = 'block';
+      }
+    }
+
+    function redirectToGame() {
+      localStorage.setItem('username', null);
+      document.getElementById('class-dropdown').style.display = 'none';
+      window.location.href = 'index.html'; 
+    }
+
+    document.getElementById('guest-button').addEventListener('click', function() {
+      localStorage.setItem('username', null);
+      document.getElementById('class-dropdown').style.display = 'none';
+      window.location.href = 'index.html'; 
+    });
+  </script>
+</body>
+</html>
